@@ -1,0 +1,83 @@
+﻿@model SecurityAccessModel
+@{
+    ViewData["Title"] = "Incidentes";
+}
+
+<h2>Detalhes</h2>
+<script defer src="~/js/Incidente.js"></script>
+
+<div class="container-fluid">
+    <form asp-action="Detalhes" method="post">
+        <input type="hidden" asp-for="Detalhe.Id" />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label asp-for="Detalhe.Id" class="control-label"></label>
+                    <input asp-for="Detalhe.Id" class="form-control" disabled />
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-geral-tab" data-toggle="tab" href="#nav-geral" role="tab" aria-controls="nav-geral" aria-selected="true">Geral</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-geral" role="tabpanel" aria-labelledby="nav-geral-tab">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Detalhe.Sigla" class="control-label"></label>
+                            <input asp-for="Detalhe.Sigla" class="form-control" required />
+                            <span asp-validation-for="Detalhe.Sigla" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Detalhe.RaasId" class="control-label"></label>
+                            <input asp-for="Detalhe.RaasId" class="form-control" required />
+                            <span asp-validation-for="Detalhe.RaasId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Detalhe.ClientId" class="control-label"></label>
+                            <input asp-for="Detalhe.ClientId" class="form-control" required />
+                            <span asp-validation-for="Detalhe.ClientId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Detalhe.Method" class="control-label"></label>
+                            <input asp-for="Detalhe.Method" class="form-control" required />
+                            <span asp-validation-for="Detalhe.Method" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Detalhe.EndPoint" class="control-label"></label>
+                            <input asp-for="Detalhe.EndPoint" class="form-control" required />
+                            <span asp-validation-for="Detalhe.EndPoint" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <a asp-action="Index" class="btn btn-primary"><i class="fas fa-undo"></i>Voltar</a>
+                            <button type="submit" class="btn btn-warning">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+

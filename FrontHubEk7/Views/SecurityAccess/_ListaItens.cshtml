@@ -1,0 +1,63 @@
+﻿@model PagedList<SecurityAccess>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>RaasID</th>
+            <th>Sigla</th>
+            <th>ClientId</th>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Data Cadastro</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model?.CurrentItens != null)
+        {
+            foreach (var item in Model.CurrentItens)
+            {
+                <tr>
+                    <td>
+                        @*@if (SharedValues.UsuarioLogado != null && SharedValues.UsuarioLogado.PerfilUsuario == PUCMinasTCC.Domain.Enums.enumPerfilUsuario.Administrador)
+                            {*@
+                        <a asp-action="Detalhes" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-edit"></i>Editar</a>
+                        @*}
+                            else
+                            {
+                                <a asp-action="Detalhes" asp-route-id="@item.IdIncidente" class="btn btn-info disabled" aria-disabled="true"><i class="fas fa-edit"></i>Editar</a>
+                            }*@
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Sigla)</td>
+                    <td>@Html.DisplayFor(modelItem => item.RaasId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClientId)</td>
+
+                    <td>
+                        @if (item.Method.ToUpper() == "GET")
+                        {
+                            <span class="status text-success">@item.Method.ToUpper()</span>
+                        }
+                        else if (item.Method.ToUpper() == "POST")
+                        {
+                            <span class="status text-warning">@item.Method.ToUpper()</span>
+                        }
+                        @*else if (item.EstadoIncidente == PUCMinasTCC.Domain.Enums.enumEstadoIncidente.AguardandoAceite)
+                        {
+                            <span class="status text-info"><i class="fas fa-hand-point-down mr-5">AguardandoAceite</i></span>
+                        }
+                        else if (item.EstadoIncidente == PUCMinasTCC.Domain.Enums.enumEstadoIncidente.Fechado)
+                        {
+                            <span class="status text-danger"><i class="fas fa-thumbs-down mr-5">Fechado</i></span>
+                        }*@
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.EndPoint)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DataCadastro)</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@*@Html.Pagination(Model.PagedList, "Pesquisar('" + @Url.Action("Pesquisar", "Empresa") + "', #page)", "#page")*@
+<pagination paged-list="@Model" action-link="Pesquisar('@Url.Action("Pesquisar")', #page)" selector-replace="#page"></pagination>
+
