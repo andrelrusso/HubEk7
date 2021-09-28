@@ -2,47 +2,39 @@
 @{
     ViewData["Title"] = "Security Access";
 }
-<script defer src="~/js/Incidente.js"></script>
+<script defer src="~/js/securityaccess.js"></script>
 <div class="card border-primary">
-    <div class="card-header">@ViewData["Title"]</div>
+    <br />
     <div class="card-body">
         <div class="row">
-            @*<div class="col-sm-1" >
+            <div class="col-sm-2">
                 <div class="form-group">
-                    <label asp-for="Filtro.Id" class="control-label"></label>
-                    <input asp-for="Filtro.Id" type="text" class="form-control" />
+                    <label asp-for="Filtro.RaasID" class="control-label"></label>
+                    <input asp-for="Filtro.RaasID" class="form-control" />
                 </div>
-            </div>*@
-            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4">
                 <div class="form-group">
-                    <label asp-for="Filtro.RaasId" class="control-label"></label>
-                    <input asp-for="Filtro.RaasId" class="form-control" />
+                    <label asp-for="Filtro.STSClientId" class="control-label"></label>
+                    <input asp-for="Filtro.STSClientId" class="form-control" />
                 </div>
             </div>
             <div class="col-sm-2">
                 <div class="form-group">
-                    <label asp-for="Filtro.ClientId" class="control-label"></label>
-                    <input asp-for="Filtro.ClientId" class="form-control" />
+                    <label asp-for="Filtro.Endpoint" class="control-label"></label>
+                    <input asp-for="Filtro.Endpoint" class="form-control" />
                 </div>
             </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label asp-for="Filtro.EndPoint" class="control-label"></label>
-                    <input asp-for="Filtro.EndPoint" class="form-control" />
-                </div>
-            </div>
-            <div class="col">
-                @*@if (SharedValues.UsuarioLogado != null && SharedValues.UsuarioLogado.PerfilUsuario == PUCMinasTCC.Domain.Enums.enumPerfilUsuario.Administrador)
-                {*@
-                    <a asp-action="Detalhes" class="btn btn-success"><i class="fas fa-plus"></i>Adicionar</a>
-                @*}
-                else
-                {
-                    <a asp-action="Detalhes" class="btn btn-success disabled"><i class="fas fa-plus"></i>Adicionar</a>
+        </div>
+        <div class="row">
+            <div class="col-sm-1" >
+                <a asp-action="Detalhes" class="btn btn-success"><i class="fas fa-plus"></i>Adicionar</a>
 
-                }*@
+            </div>
+            <div class="col-sm-1">
                 <button type="button" class="btn btn-warning" onclick="Pesquisar('@Url.Action("Pesquisar")')"><i class="fas fa-search"></i> Pesquisar</button>
             </div>
+           
         </div>
     </div>
 </div>

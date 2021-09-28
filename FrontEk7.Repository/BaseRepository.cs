@@ -1,6 +1,10 @@
-﻿using System;
+﻿using FrontEk7.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace FrontEk7.Repository
 {
@@ -9,7 +13,7 @@ namespace FrontEk7.Repository
         protected readonly EFContexto Db;
         private readonly DbSet<T> DbSet;
 
-        public BaseRepositorio(EFContexto context)
+        public BaseRepository(EFContexto context)
         {
             Db = context;
             DbSet = Db.Set<T>();
@@ -23,6 +27,27 @@ namespace FrontEk7.Repository
             return entity;
         }
 
+        public virtual void Atualizar(T obj)
+        {
+            DbSet.Update(obj);
+            Db.SaveChanges();
+        }
+
+        public virtual T Consultar(object id)
+        {
+            return DbSet.Find(id);
+        }
+
+        public virtual IEnumerable<T> Listar()
+        {
+            return DbSet.AsQueryable();
+        }
+        public void Excluir(T entity)
+        {
+            DbSet.Remove(entity);
+            Db.SaveChanges();
+        }
+
         public async Task<T> AdicionarAsync(T entity)
         {
             DbSet.Add(entity);
@@ -31,77 +56,10 @@ namespace FrontEk7.Repository
             return entity;
         }
 
-        public virtual void Atualizar(T obj)
+        public async Task AtualizarAsync(T obj)
         {
             DbSet.Update(obj);
-            Db.SaveChanges();
-        }
-
-        public async Task AtualizarAsync(T entity)
-        {
-            Db.Entry(entity).State = EntityState.Modified;
             await Db.SaveChangesAsync();
-        }
-
-
-        public virtual T Consultar(object id)
-        {
-            return DbSet.Find(id);
-        }
-
-        public virtual async Task<T> ConsultarAsync(object id)
-        {
-            return await DbSet.FindAsync(id);
-        }
-
-        public virtual async Task<IReadOnlyList<T>> ConsultarTodosAsync()
-        {
-            return await DbSet.ToListAsync();
-        }
-
-        public T Consultar(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
-        {
-            IQueryable<T> query = DbSet;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return query.FirstOrDefault(predicate);
-        }
-
-
-        public virtual IReadOnlyList<T> ConsultarLista(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, bool disableTracking = true, params Expression<Func<T, object>>[] includes)
-        {
-            var query = ApplyFilterQuery(predicate, orderBy, disableTracking, includes);
-            return query.ToList();
-        }
-
-
-        public virtual IReadOnlyList<TResult> ConsultarLista<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, bool disableTracking = true, params Expression<Func<T, object>>[] includes) where TResult : class
-        {
-            var query = ApplyFilterQuery(predicate, orderBy, disableTracking, includes);
-            return query.Select(selector).ToList();
-        }
-
-        public virtual IReadOnlyList<T> ConsultarListaTop(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int take = 10, bool disableTracking = true, params Expression<Func<T, object>>[] includes)
-        {
-            var query = ApplyFilterQuery(predicate, orderBy, disableTracking, includes);
-            return query.Take(take).ToList();
-        }
-
-        public virtual IReadOnlyList<TResult> ConsultarListaTop<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int take = 10, bool disableTracking = true, params Expression<Func<T, object>>[] includes) where TResult : class
-        {
-            var query = ApplyFilterQuery(predicate, orderBy, disableTracking, includes);
-            return query.Select(selector).Take(take).ToList();
-        }
-
-
-        public void Excluir(T entity)
-        {
-            DbSet.Remove(entity);
-            Db.SaveChanges();
         }
 
         public async Task ExcluirAsync(T entity)
@@ -110,76 +68,47 @@ namespace FrontEk7.Repository
             await Db.SaveChangesAsync();
         }
 
-        public async Task ExcluirAsync(object id)
+
+        //public async Task<T> ConsultarAsync(object id)
+        //{
+        //    try
+        //    {
+        //        return await DbSet.FindAsync(id);
+
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        public virtual async Task<T> ConsultarAsync(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[] includes)
         {
-            var entity = await DbSet.FindAsync(id);
-            DbSet.Remove(entity);
-            await Db.SaveChangesAsync();
-        }
-
-        public int Contar()
-        {
-            return DbSet.Count();
-        }
-
-        public int Contar(Expression<Func<T, bool>> predicate = null)
-        {
-            IQueryable<T> query = DbSet;
-
-            if (predicate != null)
-            {
-                query = query.Where(predicate);
-            }
-
-            return query.Count();
-        }
-
-        public async Task<int> ContarAsync()
-        {
-            return await DbSet.CountAsync();
-        }
-
-        public int SaveChanges()
-        {
-            return Db.SaveChanges();
-        }
-
-        public void Dispose()
-        {
-            Db.Dispose();
-        }
-
-        private IQueryable<T> ApplyFilterQuery(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, bool disableTracking = true, params Expression<Func<T, object>>[] includes)
-        {
-            IQueryable<T> query = DbSet;
-            if (disableTracking)
-            {
-                query = query.AsNoTracking();
-            }
+            IQueryable<T> query = Db.Set<T>();
 
             foreach (var include in includes)
             {
                 query = query.Include(include);
             }
 
-            if (predicate != null)
-            {
-                query = query.Where(predicate);
-            }
-
-            if (orderBy != null)
-            {
-                return orderBy(query);
-            }
-            else
-            {
-                return query;
-            }
+            return await query.FirstOrDefaultAsync(criteria);
         }
 
-        public bool Existe(Expression<Func<T, bool>> predicate)
+        public async Task<IEnumerable<T>> ListarAsync()
         {
-            return DbSet.Any(predicate);
+            return await DbSet.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> ListarAsync(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = Db.Set<T>();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.Where(criteria).ToListAsync();
         }
     }
 }
